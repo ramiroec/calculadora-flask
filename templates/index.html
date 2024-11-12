@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Web</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f4f6;
+        }
+
+        .calculadora {
+            width: 300px;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        #pantalla {
+            width: 100%;
+            height: 80px;
+            background-color: #222;
+            color: #fff;
+            font-size: 2rem;
+            text-align: right;
+            padding: 20px;
+            border: none;
+            outline: none;
+        }
+
+        .botones {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+        }
+
+        button {
+            width: 100%;
+            height: 80px;
+            font-size: 1.5rem;
+            border: none;
+            background-color: #444;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        button:active {
+            background-color: #666;
+        }
+
+        button:nth-child(4n) {
+            background-color: #ff9500;
+        }
+
+        button:nth-child(4n):hover {
+            background-color: #ffb74d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculadora">
+        <input type="text" id="pantalla" readonly>
+        <div class="botones">
+            <button onclick="agregarValor('7')">7</button>
+            <button onclick="agregarValor('8')">8</button>
+            <button onclick="agregarValor('9')">9</button>
+            <button onclick="agregarValor('/')">/</button>
+
+            <button onclick="agregarValor('4')">4</button>
+            <button onclick="agregarValor('5')">5</button>
+            <button onclick="agregarValor('6')">6</button>
+            <button onclick="agregarValor('*')">×</button>
+
+            <button onclick="agregarValor('1')">1</button>
+            <button onclick="agregarValor('2')">2</button>
+            <button onclick="agregarValor('3')">3</button>
+            <button onclick="agregarValor('-')">−</button>
+
+            <button onclick="limpiarPantalla()">C</button>
+            <button onclick="agregarValor('0')">0</button>
+            <button onclick="calcular()">=</button>
+            <button onclick="agregarValor('+')">+</button>
+        </div>
+    </div>
+
+    <script>
+        function agregarValor(valor) {
+            document.getElementById('pantalla').value += valor;
+        }
+
+        function limpiarPantalla() {
+            document.getElementById('pantalla').value = '';
+        }
+
+        function calcular() {
+            const expresion = document.getElementById('pantalla').value;
+            fetch('/calcular', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ expresion }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('pantalla').value = data.resultado;
+                })
+                .catch(error => {
+                    document.getElementById('pantalla').value = 'Error';
+                });
+        }
+    </script>
+</body>
+
+</html>
